@@ -30,6 +30,32 @@ func main() {
     print(horizontalPosition * depth)
 }
 
+func main2() {
+    let fileUrl = URL(fileURLWithPath: "./aoc-input")
+    guard let inputString = try? String(contentsOf: fileUrl, encoding: .utf8) else { fatalError("Invalid input") }
+    
+    let lines = inputString.components(separatedBy: "\n")
+        .filter { !$0.isEmpty }
+    var horizontalPosition = 0
+    var depth = 0
+    var aim = 0
+    
+    lines.forEach { line in
+        let (direction, steps) = parseLine(line)
+        switch direction {
+        case .forward:
+            horizontalPosition += steps
+            depth += aim * steps
+        case .up:
+            aim -= steps
+        case .down:
+            aim += steps
+        }
+    }
+    
+    print(horizontalPosition * depth)
+}
+
 enum Direction: String {
     case forward
     case up
@@ -45,3 +71,4 @@ func parseLine(_ line: String) -> (direction: Direction, steps: Int) {
 }
 
 main()
+main2()
