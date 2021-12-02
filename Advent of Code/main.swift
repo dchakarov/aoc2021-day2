@@ -12,28 +12,36 @@ func main() {
     
     let lines = inputString.components(separatedBy: "\n")
         .filter { !$0.isEmpty }
+    var horizontalPosition = 0
+    var depth = 0
     
-    // Sample algorithm
-    var scoreboard = [String: Int]()
     lines.forEach { line in
-        let (name, score) = parseLine(line)
-        scoreboard[name] = score
+        let (direction, steps) = parseLine(line)
+        switch direction {
+        case .forward:
+            horizontalPosition += steps
+        case .up:
+            depth -= steps
+        case .down:
+            depth += steps
+        }
     }
-    scoreboard
-        .sorted { lhs, rhs in
-            lhs.value > rhs.value
-        }
-        .forEach { name, score in
-            print("\(name) \(score) pts")
-        }
+    
+    print(horizontalPosition * depth)
 }
 
-func parseLine(_ line: String) -> (name: String, score: Int) {
-    let helper = RegexHelper(pattern: #"([\-\w]*)\s(\d+)"#)
+enum Direction: String {
+    case forward
+    case up
+    case down
+}
+
+func parseLine(_ line: String) -> (direction: Direction, steps: Int) {
+    let helper = RegexHelper(pattern: #"([\w]*)\s(\d+)"#)
     let result = helper.parse(line)
-    let name = result[0]
-    let score = Int(result[1])!
-    return (name: name, score: score)
+    let direction = Direction(rawValue: result[0])!
+    let steps = Int(result[1])!
+    return (direction: direction, steps: steps)
 }
 
 main()
